@@ -2,6 +2,11 @@ const mineflayer = require('mineflayer')
 const fs = require('fs')
 const https = require('https')
 
+process.on('uncaughtException', function (err) {
+  console.error(err);
+  console.log("Node NOT Exiting...");
+})
+
 const bot = mineflayer.createBot({
   host: 'mc.hypixel.net',
   username: 'colonelcool42',
@@ -16,7 +21,7 @@ const options = {
   method: 'GET'
 }
 
-var DIGINTERVAL = 80
+var DIGINTERVAL = 75
 var MOVEINTERVAL = 35000
 var REQUESTINTERVAL = 10000
 
