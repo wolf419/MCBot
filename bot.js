@@ -83,9 +83,9 @@ function startFarm() {
   setTimeout(() => {
     changeControlState()
     controlStateInterval = setInterval(changeControlState, MOVEINTERVAL)
-  }, 6000)
+  }, 10000)
 
-  setTimeout(() => digInterval = setInterval(digBlockAtCursor, DIGINTERVAL), 6000)
+  setTimeout(() => digInterval = setInterval(digBlockAtCursor, DIGINTERVAL), 10000)
 }
 
 function sendReq() {
