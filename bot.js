@@ -43,7 +43,11 @@ function digBlockAtCursor() {
     digLock = 1
     melonCount++
     console.log('Digging melon [' + melonCount.toString() + ']')
-    bot.dig(block)
+    try {
+      bot.dig(block)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
