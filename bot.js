@@ -22,43 +22,33 @@ const options = {
 }
 
 var DIGINTERVAL = 75
-var MOVEINTERVAL = 35000
+var MOVEINTERVAL = 45000
 var REQUESTINTERVAL = 10000
 
-var digLock = 0
-var moveDir = false
 var melonCount = 0
+var moveDir = false
 var controlStateInterval
-var digInterval
 
 bot.once('spawn', () => {
   console.log('Spawned')
   startFarm()
   setInterval(sendReq, REQUESTINTERVAL)
+  setTimeout(digBlockAtCursor, 10000)
 })
 
-function digBlockAtCursor() {
-  bot.look(0, 0)
+async function digBlockAtCursor() {
   var block = bot.blockAtCursor(4)
-
-  if (!block || digLock == 1)
+  if (!block) {
+    setTimeout(digBlockAtCursor, DIGINTERVAL)
     return
-
+  }
   if (block.name == 'melon') {
-    digLock = 1
     melonCount++
     console.log('Digging melon [' + melonCount.toString() + ']')
-    try {
-      bot.dig(block)
-    } catch (error) {
-      console.log(error)
-    }
+    await bot.dig(block, 'ignore')
   }
+  setTimeout(digBlockAtCursor, DIGINTERVAL)
 }
-
-bot.on('diggingCompleted', (block) => {
-  digLock = 0
-})
 
 function changeControlState() {
   switch (moveDir) {
@@ -74,13 +64,11 @@ function changeControlState() {
       console.log('Move right')
       break;
   }
-
   moveDir = !moveDir
 }
 
 function startFarm() {
   clearInterval(controlStateInterval)
-  clearInterval(digInterval)
   moveDir = false
 
   setTimeout(() => { bot.chat('/skyblock'); console.log('/skyblock') }, 2000)
@@ -89,8 +77,6 @@ function startFarm() {
     changeControlState()
     controlStateInterval = setInterval(changeControlState, MOVEINTERVAL)
   }, 10000)
-
-  setTimeout(() => digInterval = setInterval(digBlockAtCursor, DIGINTERVAL), 10000)
 }
 
 function sendReq() {
@@ -105,7 +91,6 @@ function sendReq() {
       } catch (error) {
         console.log(error)
       }
-
     })
   })
 
