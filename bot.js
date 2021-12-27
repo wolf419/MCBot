@@ -1,12 +1,8 @@
 const mineflayer = require('mineflayer')
+const fetch = require('node-fetch')
 const fs = require('fs')
-const https = require('https')
 
-process.on('uncaughtException', function (err) {
-  console.error(err);
-  console.log("Node NOT Exiting...");
-})
-
+const url = 'https://api.hypixel.net/status?key=ecf03ccb-a9e7-429c-ae88-b37446039133&uuid=07a3be94230e47438cf8f538c75de1a5'
 const bot = mineflayer.createBot({
   host: 'mc.hypixel.net',
   username: 'colonelcool42',
@@ -14,28 +10,25 @@ const bot = mineflayer.createBot({
   version: '1.16.5',
 })
 
-const options = {
-  hostname: 'api.hypixel.net',
-  port: 443,
-  path: '/status?key=ecf03ccb-a9e7-429c-ae88-b37446039133&uuid=07a3be94230e47438cf8f538c75de1a5',
-  method: 'GET'
-}
+//-----------------------------------------------------------------------------
+var DIGINTERVAL = 125
+var MOVEINTERVAL = 42000
+var REQUESTINTERVAL = 15000
 
-var DIGINTERVAL = 100
-var MOVEINTERVAL = 40000
-var REQUESTINTERVAL = 10000
-
+//-----------------------------------------------------------------------------
 var melonCount = 0
 var moveDir = false
 var controlStateInterval
 
+//-----------------------------------------------------------------------------
 bot.once('spawn', () => {
   console.log('Spawned')
   startFarm()
-  setInterval(sendReq, REQUESTINTERVAL)
+  setInterval(apiRequest, REQUESTINTERVAL)
   setTimeout(digBlockAtCursor, 10000)
 })
 
+//-----------------------------------------------------------------------------
 async function digBlockAtCursor() {
   var block = bot.blockAtCursor(4)
   if (!block) {
@@ -51,6 +44,7 @@ async function digBlockAtCursor() {
   setTimeout(digBlockAtCursor, DIGINTERVAL)
 }
 
+//-----------------------------------------------------------------------------
 function changeControlState() {
   switch (moveDir) {
     case false:
@@ -68,8 +62,10 @@ function changeControlState() {
   moveDir = !moveDir
 }
 
+//-----------------------------------------------------------------------------
 function startFarm() {
   clearInterval(controlStateInterval)
+  bot.clearControlStates()
   moveDir = false
 
   setTimeout(() => { bot.chat('/skyblock'); console.log('/skyblock') }, 2000)
@@ -80,26 +76,22 @@ function startFarm() {
   }, 10000)
 }
 
-function sendReq() {
-  const req = https.request(options, res => {
-    console.log(`statusCode: ${res.statusCode}`)
+//-----------------------------------------------------------------------------
+async function apiRequest() {
+  var response = await fetch(url)
+  jReq = await response.json()
 
-    res.on('data', d => {
-      try {
-        var jsonObject = JSON.parse(d);
-        if (jsonObject.session.mode != 'dynamic')
-          startFarm()
-      } catch (error) {
-        console.log(error)
-      }
-    })
-  })
-  req.on('error', error => {
-    console.error(error)
-  })
-  req.end()
+  try {
+    console.log(jReq.session)
+    if (jReq.session.mode != 'dynamic')
+      startFarm()
+  } catch (error) {
+    console.log(error)
+    startFarm()
+  }
 }
 
+//-----------------------------------------------------------------------------
 fs.readFile('./banner.txt', 'utf8', (err, data) => {
   if (err) {
     console.error(err)
@@ -108,7 +100,7 @@ fs.readFile('./banner.txt', 'utf8', (err, data) => {
   console.log(data)
 })
 
-// Log errors and kick reasons:
+//-----------------------------------------------------------------------------
 bot.on('kicked', console.log)
 bot.on('error', console.log)
 bot.on('end', console.log)
