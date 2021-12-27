@@ -21,8 +21,8 @@ const options = {
   method: 'GET'
 }
 
-var DIGINTERVAL = 75
-var MOVEINTERVAL = 45000
+var DIGINTERVAL = 100
+var MOVEINTERVAL = 40000
 var REQUESTINTERVAL = 10000
 
 var melonCount = 0
@@ -44,7 +44,8 @@ async function digBlockAtCursor() {
   }
   if (block.name == 'melon') {
     melonCount++
-    console.log('Digging melon [' + melonCount.toString() + ']')
+    if (melonCount % 50 == 0)
+      console.log('Digging melon [' + melonCount.toString() + ']')
     await bot.dig(block, 'ignore')
   }
   setTimeout(digBlockAtCursor, DIGINTERVAL)
@@ -93,11 +94,9 @@ function sendReq() {
       }
     })
   })
-
   req.on('error', error => {
     console.error(error)
   })
-
   req.end()
 }
 
