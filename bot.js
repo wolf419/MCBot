@@ -32,7 +32,7 @@ bot.once('spawn', () => {
 async function digBlockAtCursor() {
   var block = bot.blockAtCursor(4)
   if (!block) {
-    setTimeout(digBlockAtCursor, DIGINTERVAL)
+    digBlockAtCursor()
     return
   }
   if (block.name == 'melon') {
@@ -81,7 +81,7 @@ async function apiRequest() {
   try {
     var response = await fetch(url)
     jReq = await response.json()
-    
+
     console.log(jReq.session)
     if (jReq.session.mode != 'dynamic')
       startFarm()
