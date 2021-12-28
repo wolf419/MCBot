@@ -86,8 +86,7 @@ async function apiRequest() {
     if (jReq.session.mode != 'dynamic')
       startFarm()
   } catch (error) {
-    console.log(error)
-    startFarm()
+    console.log('api request failed')
   }
 }
 
