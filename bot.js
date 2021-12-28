@@ -11,8 +11,8 @@ const bot = mineflayer.createBot({
 })
 
 //-----------------------------------------------------------------------------
-var DIGINTERVAL = 125
-var MOVEINTERVAL = 42000
+var DIGINTERVAL = 60
+var MOVEINTERVAL = 37000
 var REQUESTINTERVAL = 15000
 
 //-----------------------------------------------------------------------------
@@ -32,6 +32,10 @@ bot.once('spawn', () => {
 async function digBlockAtCursor() {
   var block = bot.blockAtCursor(4)
   if (!block) {
+    digBlockAtCursor()
+    return
+  }
+  if (block.name == 'air') {
     digBlockAtCursor()
     return
   }
