@@ -78,10 +78,10 @@ function startFarm() {
 
 //-----------------------------------------------------------------------------
 async function apiRequest() {
-  var response = await fetch(url)
-  jReq = await response.json()
-
   try {
+    var response = await fetch(url)
+    jReq = await response.json()
+    
     console.log(jReq.session)
     if (jReq.session.mode != 'dynamic')
       startFarm()
