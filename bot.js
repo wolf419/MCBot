@@ -32,11 +32,11 @@ bot.once('spawn', () => {
 async function digBlockAtCursor() {
   var block = bot.blockAtCursor(4)
   if (!block) {
-    digBlockAtCursor()
+    setTimeout(digBlockAtCursor, 10)
     return
   }
   if (block.name != 'melon') {
-    digBlockAtCursor()
+    setTimeout(digBlockAtCursor, 10)
     return
   }
   melonCount++
