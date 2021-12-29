@@ -35,16 +35,14 @@ async function digBlockAtCursor() {
     digBlockAtCursor()
     return
   }
-  if (block.name == 'air') {
+  if (block.name != 'melon') {
     digBlockAtCursor()
     return
   }
-  if (block.name == 'melon') {
-    melonCount++
-    if (melonCount % 50 == 0)
-      console.log('Digging melon [' + melonCount.toString() + ']')
-    await bot.dig(block, 'ignore')
-  }
+  melonCount++
+  if (melonCount % 50 == 0)
+    console.log('Digging melon [' + melonCount.toString() + ']')
+  await bot.dig(block, 'ignore')
   setTimeout(digBlockAtCursor, DIGINTERVAL)
 }
 
