@@ -16,7 +16,7 @@ var MOVEINTERVAL = 37000
 var REQUESTINTERVAL = 15000
 
 //-----------------------------------------------------------------------------
-var melonCount = 0
+var blockCount = 0
 var moveDir = false
 var controlStateInterval
 
@@ -35,13 +35,13 @@ async function digBlockAtCursor() {
     setTimeout(digBlockAtCursor, 10)
     return
   }
-  if (block.name != 'melon' && block.name != 'carved_pumpkin') {
+  if (block.name != 'cocoa') {
     setTimeout(digBlockAtCursor, 10)
     return
   }
-  melonCount++
-  if (melonCount % 50 == 0)
-    console.log('Digging block [' + melonCount.toString() + ']')
+  blockCount++
+  if (blockCount % 50 == 0)
+    console.log('Digging block [' + blockCount.toString() + ']')
   await bot.dig(block, 'ignore')
   setTimeout(digBlockAtCursor, DIGINTERVAL)
 }
@@ -51,14 +51,14 @@ function changeControlState() {
   switch (moveDir) {
     case false:
       bot.clearControlStates()
-      bot.setControlState('left', true)
-      console.log('Move left')
+      bot.setControlState('forward', true)
+      console.log('Move forward')
       break;
 
     case true:
       bot.clearControlStates()
-      bot.setControlState('right', true)
-      console.log('Move right')
+      bot.setControlState('back', true)
+      console.log('Move back')
       break;
   }
   moveDir = !moveDir
